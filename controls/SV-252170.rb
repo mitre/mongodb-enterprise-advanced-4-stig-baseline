@@ -51,4 +51,9 @@ https://docs.mongodb.com/v4.4/reference/command/killAllSessionsByPattern/'
   tag 'documentable'
   tag cci: ['CCI-002361']
   tag nist: ['AC-12']
+
+  describe 'MongoDB must automatically terminate a user session after organization-defined conditions or trigger events requiring session disconnect.' do
+    skip 'Review system documentation to obtain the organization\'s definition of circumstances requiring automatic session termination.  If the documentation explicitly states that such termination is not required or is prohibited, this is not a finding.'
+    skip 'If the system owner, data owner, or organization requires additional assurance, this is a finding.'
+  end
 end

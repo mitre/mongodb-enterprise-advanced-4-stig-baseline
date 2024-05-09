@@ -21,4 +21,9 @@ To set the expiration time (in seconds) for the authentication cache, see the -t
   tag 'documentable'
   tag cci: ['CCI-002007']
   tag nist: ['IA-5 (13)']
+
+  describe 'MongoDB must prohibit the use of cached authenticators after an organization-defined time period.' do
+    skip 'If MongoDB is configured to authenticate using SASL and LDAP check the saslauthd command line options in the system boot script that starts saslauthd (the location will be dependent on the specific Linux operating system and boot script layout and naming conventions).'
+    skip 'If the "-t" option is not set for the "saslauthd" process in the system boot script, this is a finding.'
+  end
 end
