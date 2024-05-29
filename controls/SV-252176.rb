@@ -113,7 +113,7 @@ https://docs.mongodb.com/v4.4/core/collection-level-access-control/#privileges-a
   tag cci: ['CCI-002038']
   tag nist: ['IA-11']
 
-  create_role_command="EJSON.stringify(db.getSiblingDB('products').createRole({
+  create_role_command = "EJSON.stringify(db.getSiblingDB('products').createRole({
      role: 'myTestRole',
      privileges: [
        { resource: { db: 'products', collection: 'inventory' }, actions: [ 'find', 'update', 'insert' ] },
@@ -121,31 +121,30 @@ https://docs.mongodb.com/v4.4/core/collection-level-access-control/#privileges-a
      ],
      roles: [ ]}, { w: 'majority' , wtimeout: 5000 }))"
 
-  create_user_command="EJSON.stringify(db.getSiblingDB('products').createUser({user: 'myRoleTestUser', pwd: 'password1', roles: ['myTestRole']}))"
+  create_user_command = "EJSON.stringify(db.getSiblingDB('products').createUser({user: 'myRoleTestUser', pwd: 'password1', roles: ['myTestRole']}))"
 
-  inventory_write_command = "EJSON.stringify(db.inventory.insert({a: 1}))"
-  inventory_find_command = "db.inventory.find()"
+  inventory_write_command = 'EJSON.stringify(db.inventory.insertOne({a: 1}))'
+  inventory_find_command = 'db.inventory.find()'
   inventory_update_command = "EJSON.stringify(db.inventory.update({a:1}, {\\$set: {'updated': true}}))"
 
-  order_write_command = "EJSON.stringify(db.orders.insert({a: 1}))"
-  order_find_command = "db.orders.find()"
+  order_write_command = 'EJSON.stringify(db.orders.insertOne({a: 1}))'
+  order_find_command = 'db.orders.find()'
   order_update_command = "db.orders.update({a:1}, {\\$set: {'updated': true}})"
 
-  run_create_user = "mongosh mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')} --quiet --eval \"#{create_user_command}\""
+  run_create_user = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{create_user_command}\""
+  run_create_role = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{create_role_command}\""
 
-  run_create_role = "mongosh mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')} --quiet --eval \"#{create_role_command}\""
+  run_inventory_write = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{inventory_write_command}\""
+  run_inventory_find = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{inventory_find_command}\""
+  run_inventory_update = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{inventory_update_command}\""
 
-  run_inventory_write = "mongosh mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?authMechanism=SCRAM-SHA-256 --quiet --eval \"#{inventory_write_command}\""
-  run_inventory_find = "mongosh mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?authMechanism=SCRAM-SHA-256 --quiet --eval \"#{inventory_find_command}\""
-  run_inventory_update = "mongosh mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?authMechanism=SCRAM-SHA-256 --quiet --eval \"#{inventory_update_command}\""
+  run_order_write = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{order_write_command}\""
+  run_order_find = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{order_find_command}\""
+  run_order_update = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{order_update_command}\""
 
-  run_order_write = "mongosh mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?authMechanism=SCRAM-SHA-256 --quiet --eval \"#{order_write_command}\""
-  run_order_find = "mongosh mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?authMechanism=SCRAM-SHA-256 --quiet --eval \"#{order_find_command}\""
-  run_order_update = "mongosh mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?authMechanism=SCRAM-SHA-256 --quiet --eval \"#{order_update_command}\""
-  
-  create_user_output = json({command: run_create_user})
+  create_user_output = json({ command: run_create_user })
   create_user_again = command(run_create_user)
-    
+
   inventory_write_output = command(run_inventory_write)
   inventory_find_output = command(run_inventory_find)
   inventory_update_output = command(run_inventory_update)
@@ -156,54 +155,53 @@ https://docs.mongodb.com/v4.4/core/collection-level-access-control/#privileges-a
 
   describe.one do
     describe 'Test user' do
-      it 'should be created' do 
+      it 'should be created' do
         expect(create_user_output.params['ok']).to eq(1)
       end
     end
 
     describe 'Test user' do
-      it 'should be created' do 
+      it 'should be created' do
         expect(create_user_again.stderr).to match(/MongoServerError: User "myRoleTestUser@products" already exists/)
       end
     end
   end
 
-  # Inventory commands 
+  # Inventory commands
   describe 'Test user' do
-    it 'should be able to write to the database' do 
+    it 'should be able to write to the database' do
       expect(inventory_write_output.stdout).to match(/"acknowledged":true/)
     end
   end
 
   describe 'Test user' do
-    it 'should be able to find documents in the database' do 
+    it 'should be able to find documents in the database' do
       expect(inventory_find_output.stdout).to match(/_id: ObjectId/)
     end
   end
 
   describe 'Test user' do
-    it 'should be able to update a document in the database' do 
+    it 'should be able to update a document in the database' do
       expect(inventory_update_output.stdout).to match(/"acknowledged":true/)
     end
   end
 
   # Order commands
   describe 'Test user' do
-    it 'should not be able to write to the database' do 
+    it 'should not be able to write to the database' do
       expect(order_write_output.stderr).to match(/MongoBulkWriteError: not authorized on products to execute command/)
     end
   end
 
   describe 'Test user' do
-    it 'should not be able to find documents in the database' do 
+    it 'should not be able to find documents in the database' do
       expect(order_find_output.stdout).to match(/_id: ObjectId/)
     end
   end
 
   describe 'Test user' do
-    it 'should not be able to update a document in the database' do 
+    it 'should not be able to update a document in the database' do
       expect(order_update_output.stderr).to match(/MongoServerError: not authorized on products to execute command/)
     end
   end
-
 end
