@@ -142,7 +142,8 @@ https://docs.mongodb.com/v4.4/core/collection-level-access-control/#privileges-a
   run_order_find = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{order_find_command}\""
   run_order_update = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{order_update_command}\""
 
-  create_role_output = command(run_create_role)
+  create_role_output = json({ command: run_create_role })
+  create_role_again = command(run_create_user)
   create_user_output = json({ command: run_create_user })
   create_user_again = command(run_create_user)
 
@@ -153,6 +154,20 @@ https://docs.mongodb.com/v4.4/core/collection-level-access-control/#privileges-a
   order_write_output = command(run_order_write)
   order_find_output = command(run_order_find)
   order_update_output = command(run_order_update)
+    
+  describe.one do
+    describe 'Test user role' do
+      it 'should be created' do
+        expect(create_role_output.params['ok']).to eq(1)
+      end
+    end
+
+    describe 'Test user role' do
+      it 'should be created' do
+        expect(create_role_again.stderr).to match(/MongoServerError: User "myTestRole@products" already exists/)
+      end
+    end
+  end
 
   describe.one do
     describe 'Test user' do
