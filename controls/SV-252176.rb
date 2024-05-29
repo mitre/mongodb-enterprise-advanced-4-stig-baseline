@@ -131,8 +131,8 @@ https://docs.mongodb.com/v4.4/core/collection-level-access-control/#privileges-a
   order_find_command = 'db.orders.find()'
   order_update_command = "db.orders.update({a:1}, {\\$set: {'updated': true}})"
 
-  run_create_user = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{create_user_command}\""
   run_create_role = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{create_role_command}\""
+  run_create_user = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{create_user_command}\""
 
   run_inventory_write = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{inventory_write_command}\""
   run_inventory_find = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{inventory_find_command}\""
@@ -142,6 +142,7 @@ https://docs.mongodb.com/v4.4/core/collection-level-access-control/#privileges-a
   run_order_find = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{order_find_command}\""
   run_order_update = "mongosh \"mongodb://myRoleTestUser:password1@#{input('mongo_host')}:#{input('mongo_port')}/products?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{order_update_command}\""
 
+  create_role_output = command(run_create_role)
   create_user_output = json({ command: run_create_user })
   create_user_again = command(run_create_user)
 
