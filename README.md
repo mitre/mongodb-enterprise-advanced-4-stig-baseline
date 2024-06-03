@@ -1,117 +1,97 @@
-## SAF TEMPLATE FILE
+# mongodb-enterprise-advanced-4-stig baseline
 
-(Below is an example of the README that should be in place for a SAF-developed InSpec profile -- requirements, running instructions, etc.)
-
-InSpec profile to validate the secure configuration of a Kubernetes node against [DISA's](https://iase.disa.mil/stigs/Pages/index.aspx) Kubernetes Secure Technical Implementation Guide (STIG) Version 1 Release 1.
-
-## Getting Started  
-It is intended and recommended that InSpec and this profile be run from a __"runner"__ host (such as a DevOps orchestration server, an administrative management system, or a developer's workstation/laptop) against the target remotely using the SSH transport.
-
-__For the best security of the runner, always install on the runner the _latest version_ of InSpec and supporting Ruby language components.__
-
-Latest versions and installation options are available at the [InSpec](http://inspec.io/) site.
-
-The Kubernetes STIG includes security requirements for both the Kubernetes cluster itself and the nodes that comprise it. This profile includes the checks for the node portion. It is intended  to be used in conjunction with the <b>[Kubernetes Cluster](https://github.com/mitre/k8s-cluster-stig-baseline)</b> profile that performs automated compliance checks of the Kubernetes cluster.
+InSpec profile to validate the secure configuration of MongoDB against [DISA's](https://public.cyber.mil/stigs/downloads/) MongoDB Enterprise Advanced 4.x Security Technical
+Implementation Guide (STIG) Version 1, Release 2. (Applies to database versions 4, 5, 6, & 7)
 
 ## Getting Started
 
-### Requirements
+**For the best security of the runner, always install on the runner the _latest version_ of InSpec and supporting Ruby language components.**
 
-#### Kubernetes Cluster
-- Kubernetes Platform deployment
-- Access to the Kubernetes Node over ssh
-- Account providing appropriate permissions to perform audit scan
+Latest versions and installation options are available at the [InSpec](http://inspec.io/) site.
 
+## Inputs: Tailoring Your Scan to Your Environment
 
-#### Required software on the InSpec Runner
-- git
-- [InSpec](https://www.chef.io/products/chef-inspec/)
+To ensure the profile runs correctly in your specific environment, you need to configure the following inputs in an `inputs.yml` file. A template file named `inputs_template.yml` is provided to help you get started. More information about InSpec inputs can be found in the [InSpec Profile Documentation](https://docs.chef.io/inspec/profiles/).
 
-### Setup Environment on the InSpec Runner
-#### Install InSpec
-Go to https://www.inspec.io/downloads/ and consult the documentation for your Operating System to download and install InSpec.
+### Example Inputs You Can Use
 
-#### Ensure InSpec version is at least 4.23.10 
-```sh
-inspec --version
-```
-### Profile Input Values
-The default values for profile inputs are given in `inspec.yml`. These values can be overridden by creating an `inputs.yml` file -- see [the InSpec documentation for inputs](https://docs.chef.io/inspec/inputs/).
+```yaml
+# The username for the MongoDB administrative account.
+mongo_dba: "root"
 
-```yml
-  - name: manifests_path
-    description: 'Path to Kubernetes manifest files on the target node'
-    type: string
-    value: '/etc/kubernetes/manifests'
-    required: true
+# The password for the MongoDB administrative account.
+mongo_dba_password: "root"
 
-  - name: pki_path
-    description: 'Path to Kubernetes PKI files on the target node'
-    type: string
-    value: '/etc/kubernetes/pki/'
-    required: true
+# The hostname or IP address of the MongoDB server.
+mongo_host: "localhost"
 
-  - name: kubeadm_path
-    description: 'Path to kubeadm file on the target node'
-    type: string
-    value: '/usr/local/bin/kubeadm'
-    required: true
+# The port number on which the MongoDB server is listening.
+mongo_port: "27017"
 
-  - name: kubectl_path
-    description: 'Path to kubectl on the target node'
-    type: string
-    value: '/usr/local/bin/kubectl'
-    required: true
+# The database to authenticate against.
+mongo_auth_source: "admin"
 
-  - name: kubernetes_conf_files
-    description: 'Path to Kubernetes conf files on the target node'
-    type: array
-    value:
-        - /etc/kubernetes/admin.conf
-        - /etc/kubernetes/scheduler.conf
-        - /etc/kubernetes/controller-manager.conf
-    required: true
+# The path to the Certificate Authority (CA) bundle file for SSL/TLS connections.
+ca_file: "/etc/ssl/CA_bundle.pem"
 
+# The path to the MongoDB SSL/TLS certificate key file.
+certificate_key_file: "/etc/ssl/mongodb.pem"
 ```
 
-### How to execute this instance  
-(See: https://www.inspec.io/docs/reference/cli/)
+## Running This Overlay Directly from Github
 
-**Execute the Kubernetes Node profile on each node in the cluster. The profile will adapt its checks based on the Kubernetes components located on the node.**
-
-#### Execute a single Control in the Profile 
-**Note**: Replace the profile's directory name - e.g. - `<Profile>` with `.` if currently in the profile's root directory.
+Against a _**locally-hosted**_ instance (i.e., InSpec installed on the target hosting the MongoDB database)
 
 ```sh
-inspec exec <Profile> -t ssh://TARGET_USERNAME@TARGET_IP:TARGET_PORT --sudo -i <your_PEM_KEY> --controls=<control_id> --show-progress
+inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline/archive/main.tar.gz --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
-#### Execute a Single Control and save results as JSON 
+Against a _**docker-containerized**_ instance (i.e., InSpec installed on the node hosting the MongoDB container):
+
 ```sh
-inspec exec <Profile> -t ssh://TARGET_USERNAME@TARGET_IP:TARGET_PORT --sudo -i <your_PEM_KEY> --controls=<control_id> --show-progress --reporter json:results.json
+inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseliney/archive/main.tar.gz -t docker://<instance_id> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json> --show-progress
 ```
 
-#### Execute All Controls in the Profile 
-```sh
-inspec exec <Profile>  -t ssh://TARGET_USERNAME@TARGET_IP:TARGET_PORT --sudo -i <your_PEM_KEY> --show-progress
+### Different Run Options
+
+[Full exec options](https://docs.chef.io/inspec/cli/#options-3)
+
+## Running This Overlay from a local Archive copy
+
+If your runner is not always expected to have direct access to GitHub, use the following steps to create an archive bundle of this overlay and all of its dependent tests:
+
+(Git is required to clone the InSpec profile using the instructions below. Git can be downloaded from the [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) site.)
+
+When the **"runner"** host uses this profile overlay for the first time, follow these steps:
+
+```
+mkdir profiles
+cd profiles
+git clone https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git
+inspec archive mongodb-enterprise-advanced-4-stig-baseline
+inspec exec <name of generated archive> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
-#### Execute all the Controls in the Profile and save results as JSON 
-```sh
-inspec exec <Profile> -t ssh://TARGET_USERNAME@TARGET_IP:TARGET_PORT --sudo -i <your_PEM_KEY> --show-progress  --reporter json:results.json
+For every successive run, follow these steps to always have the latest version of this overlay and dependent profiles:
+
+```
+cd mongodb-enterprise-advanced-4-stig-baseline
+git pull
+cd ..
+inspec archive mongodb-enterprise-advanced-4-stig-baseline --overwrite
+inspec exec <name of generated archive> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
 ```
 
-## Check Overview
+## Using Heimdall for Viewing the JSON Results
 
-**Kubernetes Components**
+The JSON results output file can be loaded into **[heimdall-lite](https://heimdall-lite.mitre.org/)** for a user-interactive, graphical view of the InSpec results.
 
-This profile evaluates the STIG compliance of the following Kubernetes Components by evaluating their process configuration:
+The JSON InSpec results file may also be loaded into a **[full heimdall server](https://github.com/mitre/heimdall)**, allowing for additional functionality such as to store and compare multiple profile runs.
 
-- kube-apiserver
-- kube-controller-manager
-- kube-scheduler
-- kubelet
-- kube-proxy
-- etcd
+## Authors
 
-If these components are not in use in the target cluster or named differently, the profile has to be adapted for the target K8S distribution using an [InSpec Profile Overlay](https://blog.chef.io/understanding-inspec-profile-inheritance).
+- Sean Chacon Cai - [seanlongcc](https://github.com/seanlongcc)
+
+## Special Thanks
+
+- Will Dower - [wdower](https://github.com/wdower)
