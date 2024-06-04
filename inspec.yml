@@ -108,7 +108,7 @@ inputs:
     description: "Authorized superuser accounts"
     type: array
     value:
-      - "admin.admin"
+      - "admin.root"
     required: true
     sensitive: true
 
@@ -129,7 +129,6 @@ inputs:
     value:
       - "admin.root"
       - "products.myTestRole"
-      - "test.read"
     required: true
     sensitive: true
 

@@ -11,7 +11,7 @@ Latest versions and installation options are available at the [InSpec](http://in
 
 ## Inputs: Tailoring Your Scan to Your Environment
 
-To ensure the profile runs correctly in your specific environment, you need to configure the following inputs in an `inputs.yml` file. A template file named `inputs_template.yml` is provided to help you get started. More information about InSpec inputs can be found in the [InSpec Profile Documentation](https://docs.chef.io/inspec/profiles/).
+To ensure the profile runs correctly in your specific environment, you need to configure the inputs the `inspec.yml` and the `inputs.yml` file. A template file named `inputs_template.yml` is provided to help you get started. More information about InSpec inputs can be found in the [InSpec Profile Documentation](https://docs.chef.io/inspec/profiles/).
 
 ### Example Inputs You Can Use
 
