@@ -58,11 +58,16 @@ For the operating system finding, refer to the appropriate operating system docu
 
   run_command = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{mongo_command}\""
 
+  run_command_output = command(run_command)
+
   describe mongodb_conf(input('mongod_config_path')) do
     its(['net', 'tls', 'FIPSMode']) { should eq true }
   end
 
-  describe command(run_command) do
-    its('stdout') { should match(/true/i) }
+  describe 'FIPS mode' do
+    it 'should be enabled' do
+      expect(run_command_output.stdout).to match(/true/i)
+    end
   end
+  
 end
