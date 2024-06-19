@@ -87,7 +87,7 @@ There may be several resources in a role that contain these privileges and the r
                     role_output['inheritedPrivileges'].map { |privilege| privilege['actions'] }
       all_actions.flatten!
 
-      describe "Role '#{role}' of user #{user['_id']} does not have privileges for 'createCollection' and 'changeStream', and" do
+      describe "Role '#{role}' of user #{user['_id']} does not have privileges for #{input('inappropriate_mongo_privileges')}, and" do
         subject { all_actions }
         it { should_not be_in input('inappropriate_mongo_privileges') }
       end

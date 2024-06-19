@@ -85,8 +85,8 @@ To grant a role to a user use the db.grantRolesToUser(...) method."
       all_actions = role_output['privileges'].map { |privilege| privilege['actions'] } +
                     role_output['inheritedPrivileges'].map { |privilege| privilege['actions'] }
       all_actions.flatten!
-
-      describe "Role '#{role}' of user #{user['_id']} has the proper privileges" do
+      
+      describe "Role '#{role}' of user #{user['_id']} does not have privileges for #{input('inappropriate_mongo_privileges')}, and" do
         subject { all_actions }
         it { should_not be_in input('inappropriate_mongo_privileges') }
       end
