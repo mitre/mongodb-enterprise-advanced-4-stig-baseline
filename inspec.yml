@@ -1,15 +1,14 @@
-name: MongoDB_Enterprise_Advanced_4-x_STIG
-title: null
-maintainer: null
-copyright: null
-copyright_email: null
-license: null
-summary: null
-description: null
+name: mongodb-enterprise-advanced-4-stig-baseline
+title: mongodb-enterprise-advanced-4-stig-baseline
+maintainer: MITRE SAF Team
+copyright: MITRE, 2024
+copyright_email: saf@groups.mitre.org
+license: Apache-2.0
+summary: "Inspec validation profile for MongoDB Enterprise Advanced 4.x Security Technical Implementation Guide :: Version 1, Release: 2 Benchmark Date: 27 Oct 2022"
 version: 1.0.0
 supports: []
 depends: []
-inspec_version: null
+inspec_version: ">=6.0"
 
 inputs:
   # SV-252134, SV-252135, SV-252136, SV-252137, SV-252138, SV-252139, SV-252141, SV-252142, 

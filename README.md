@@ -40,16 +40,16 @@ certificate_key_file: "/etc/ssl/mongodb.pem"
 
 ## Running This Overlay Directly from Github
 
-Against a _**locally-hosted**_ instance (i.e., InSpec installed on the target hosting the MongoDB database)
+Against a _**locally-hosted**_ instance:
 
 ```sh
-inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline/archive/main.tar.gz --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json> --no-create-lockfile
 ```
 
-Against a _**docker-containerized**_ instance (i.e., InSpec installed on the node hosting the MongoDB container):
+Against a _**docker-containerized**_ instance:
 
 ```sh
-inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseliney/archive/main.tar.gz -t docker://<instance_id> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json> --show-progress
+inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git -t docker://<instance_id> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json> --no-create-lockfile
 ```
 
 ### Different Run Options
