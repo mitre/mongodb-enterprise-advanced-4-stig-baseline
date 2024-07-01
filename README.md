@@ -43,13 +43,13 @@ certificate_key_file: "/etc/ssl/mongodb.pem"
 Against a _**locally-hosted**_ instance:
 
 ```sh
-inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json> --no-create-lockfile
+inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git --input-file=<your_inputs_file.yml> --reporter=cli json:<your_output_file.json> --no-create-lockfile --enhanced-outcomes
 ```
 
 Against a _**docker-containerized**_ instance:
 
 ```sh
-inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git -t docker://<instance_id> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json> --no-create-lockfile
+inspec exec https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git -t docker://<instance_id> --input-file=<your_inputs_file.yml> --reporter=cli json:<your_output_file.json> --no-create-lockfile --enhanced-outcomes
 ```
 
 ### Different Run Options
@@ -64,22 +64,22 @@ If your runner is not always expected to have direct access to GitHub, use the f
 
 When the **"runner"** host uses this profile overlay for the first time, follow these steps:
 
-```
+```sh
 mkdir profiles
 cd profiles
 git clone https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline.git
 inspec archive mongodb-enterprise-advanced-4-stig-baseline
-inspec exec <name of generated archive> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+inspec exec <name of generated archive> --input-file=<your_inputs_file.yml> --reporter=cli json:<your_output_file.json> --no-create-lockfile --enhanced-outcomes
 ```
 
 For every successive run, follow these steps to always have the latest version of this overlay and dependent profiles:
 
-```
+```sh
 cd mongodb-enterprise-advanced-4-stig-baseline
 git pull
 cd ..
 inspec archive mongodb-enterprise-advanced-4-stig-baseline --overwrite
-inspec exec <name of generated archive> --input-file=<path_to_your_inputs_file/name_of_your_inputs_file.yml> --reporter=cli json:<path_to_your_output_file/name_of_your_output_file.json>
+inspec exec <name of generated archive> --input-file=<your_inputs_file.yml> --reporter=cli json:<your_output_file.json> --no-create-lockfile --enhanced-outcomes
 ```
 
 ## Using Heimdall for Viewing the JSON Results
@@ -95,3 +95,11 @@ The JSON InSpec results file may also be loaded into a **[full heimdall server](
 ## Special Thanks
 
 - Will Dower - [wdower](https://github.com/wdower)
+
+## License
+
+- See the [License](/LICENSE.md)
+
+## Notice
+
+- See the [Notice](/NOTICE.md)
