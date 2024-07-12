@@ -36,26 +36,21 @@ https://docs.mongodb.com/v4.4/reference/command/revokeRolesFromUser/'
 
   get_dbs = "EJSON.stringify(db.adminCommand('listDatabases'))"
 
-  run_get_dbs = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?authSource=#{input 'mongo_auth_source'}&tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{get_dbs}\""
+  run_get_dbs = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/?authSource=#{input('mongo_auth_source')}&tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{get_dbs}\""
 
   dbs_output = json({ command: run_get_dbs }).params
 
-  # extract just the names of the databases
   db_names = dbs_output['databases'].map { |db| db['name'] }
 
   db_names.each do |db_name|
-    run_get_users = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/#{db_name}?authSource=#{input 'mongo_auth_source'}&tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{get_users}\""
+    run_get_users = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/#{db_name}?authSource=#{input('mongo_auth_source')}&tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"#{get_users}\""
 
-    # run the command and parse the output as json
     users_output = json({ command: run_get_users }).params
 
     users_output['users'].each do |user|
-      # check if user is not a superuser
       next if input('mongo_superusers').include?(user['user'])
 
-      # check each users role
       describe "User roles of #{user['_id']}" do
-        # collect all roles for user
         subject { user['roles'].map { |role| role['role'] } }
         it { should_not include 'dbOwner' }
       end

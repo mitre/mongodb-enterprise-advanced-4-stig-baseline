@@ -69,5 +69,4 @@ For the operating system finding, refer to the appropriate operating system docu
       expect(run_command_output.stdout).to match(/true/i)
     end
   end
-  
 end

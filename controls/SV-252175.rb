@@ -89,8 +89,6 @@ https://docs.mongodb.com/v4.4/reference/method/db.grantRolesToUser/"
 
   run_user_output = command(run_user_write)
 
-  # drop_user_output = json({command: run_drop_user})
-
   describe.one do
     describe 'Test user' do
       it 'should be created' do
@@ -110,10 +108,4 @@ https://docs.mongodb.com/v4.4/reference/method/db.grantRolesToUser/"
       expect(run_user_output.stderr).to match(/MongoServerError: not authorized on test to execute command/)
     end
   end
-
-  # describe 'Test user' do
-  #     it 'should be dropped from the database' do
-  #       expect(drop_user_output.params['ok']).to eq(1)
-  #     end
-  #   end
 end
