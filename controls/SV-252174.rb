@@ -70,16 +70,15 @@ There may be several resources in a role that contain these privileges and the r
 
   system_users = json({ command: run_get_system_users }).params
 
-  if system_users.empty?
+  non_superusers = system_users.reject { |user| input('mongo_superusers').include?(user['_id']) }
+
+  if non_superusers.empty?
     describe 'Allowing regular users to install software, without explicit privileges, creates the risk that untested or potentially malicious software will be installed on the system. Explicit privileges (escalated or administrative privileges) provide the regular user with explicit capabilities and control that exceed the rights of a regular user.' do
       skip 'If any non-administrative user has a role that where the resource has the action of createCollections or changeStream this is a finding.'
-      skip 'Skipping test as no users are present.'
+      skip 'Skipping test as no non-administrative users are present.'
     end
   else
-    system_users.each do |user|
-      user_id = user['_id']
-      next if input('mongo_superusers').include?(user_id)
-
+    non_superusers.each do |user|
       db_name = user['db']
       user_roles = user['roles'].map { |role| (role['role']).to_s }
       user_roles.map { |role| "#{db_name}.#{role}" }

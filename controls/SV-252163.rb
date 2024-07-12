@@ -69,16 +69,16 @@ To grant a role to a user use the db.grantRolesToUser(...) method."
 
   system_users = json({ command: run_get_system_users }).params
 
-  if system_users.empty?
+  non_superusers = system_users.reject { |user| input('mongo_superusers').include?(user['_id']) }
+
+
+  if non_superusers.empty?
     describe 'Non-organizational users must be uniquely identified and authenticated for all accesses other than those accesses explicitly identified and documented by the organization when related to the use of anonymous access, such as accessing a web server.' do
       skip 'If a user has a role with inappropriate privileges, this is a finding.'  
-      skip 'Skipping test as no users are present.'
+      skip 'Skipping test as no non-administrative users are present.'
     end
   else
-    system_users.each do |user|
-      user_id = user['_id']
-      next if input('mongo_superusers').include?(user_id)
-
+    non_superusers.each do |user|
       db_name = user['db']
       user_roles = user['roles'].map { |role| (role['role']).to_s }
       user_roles.map { |role| "#{db_name}.#{role}" }
