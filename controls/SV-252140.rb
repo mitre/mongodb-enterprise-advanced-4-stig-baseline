@@ -71,26 +71,33 @@ To grant a role to a user run the following:
 
   system_users = json({ command: run_get_system_users }).params
 
-  system_users.each do |user|
-    user_id = user['_id']
-    next if input('mongo_superusers').include?(user_id)
+  if system_users.empty?
+    describe 'Non-organizational users must be uniquely identified and authenticated for all accesses other than those accesses explicitly identified and documented by the organization when related to the use of anonymous access, such as accessing a web server.' do
+      skip 'If a user has a role with inappropriate privileges, this is a finding.'
+      skip 'Skipping test as no users are present.'
+    end
+  else
+    system_users.each do |user|
+      user_id = user['_id']
+      next if input('mongo_superusers').include?(user_id)
 
-    db_name = user['db']
-    user_roles = user['roles'].map { |role| (role['role']).to_s }
-    user_roles.map { |role| "#{db_name}.#{role}" }
+      db_name = user['db']
+      user_roles = user['roles'].map { |role| (role['role']).to_s }
+      user_roles.map { |role| "#{db_name}.#{role}" }
 
-    user_roles.each do |role|
-      run_get_role = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/#{db_name}?authSource=#{input('mongo_auth_source')}&tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"EJSON.stringify(db.getRole('#{role}', {showPrivileges: true}))\""
+      user_roles.each do |role|
+        run_get_role = "mongosh \"mongodb://#{input('mongo_dba')}:#{input('mongo_dba_password')}@#{input('mongo_host')}:#{input('mongo_port')}/#{db_name}?authSource=#{input('mongo_auth_source')}&tls=true&tlsCAFile=#{input('ca_file')}&tlsCertificateKeyFile=#{input('certificate_key_file')}\" --quiet --eval \"EJSON.stringify(db.getRole('#{role}', {showPrivileges: true}))\""
 
-      role_output = json({ command: run_get_role }).params
+        role_output = json({ command: run_get_role }).params
 
-      all_actions = role_output['privileges'].map { |privilege| privilege['actions'] } +
-                    role_output['inheritedPrivileges'].map { |privilege| privilege['actions'] }
-      all_actions.flatten!
+        all_actions = role_output['privileges'].map { |privilege| privilege['actions'] } +
+                      role_output['inheritedPrivileges'].map { |privilege| privilege['actions'] }
+        all_actions.flatten!
 
-      describe "Role '#{role}' of user #{user['_id']} does not have privileges for #{input('inappropriate_mongo_privileges')}, and" do
-        subject { all_actions }
-        it { should_not be_in input('inappropriate_mongo_privileges') }
+        describe "Role '#{role}' of user #{user['_id']} does not have privileges for #{input('inappropriate_mongo_privileges')}, and" do
+          subject { all_actions }
+          it { should_not be_in input('inappropriate_mongo_privileges') }
+        end
       end
     end
   end
