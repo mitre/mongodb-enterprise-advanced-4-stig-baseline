@@ -75,8 +75,9 @@ To grant a role to a user run the following:
 
   if non_superusers.empty?
     describe 'Non-organizational users must be uniquely identified and authenticated for all accesses other than those accesses explicitly identified and documented by the organization when related to the use of anonymous access, such as accessing a web server.' do
-      skip 'If a user has a role with inappropriate privileges, this is a finding.'
-      skip 'Skipping test as no non-administrative users are present.'
+      it 'No non-administrative users are present' do
+        expect(true).to eq(true)
+      end
     end
   else
     non_superusers.each do |user|

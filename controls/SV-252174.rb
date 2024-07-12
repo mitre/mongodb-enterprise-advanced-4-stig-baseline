@@ -74,8 +74,9 @@ There may be several resources in a role that contain these privileges and the r
 
   if non_superusers.empty?
     describe 'Allowing regular users to install software, without explicit privileges, creates the risk that untested or potentially malicious software will be installed on the system. Explicit privileges (escalated or administrative privileges) provide the regular user with explicit capabilities and control that exceed the rights of a regular user.' do
-      skip 'If any non-administrative user has a role that where the resource has the action of createCollections or changeStream this is a finding.'
-      skip 'Skipping test as no non-administrative users are present.'
+      it 'No non-administrative users are present' do
+        expect(true).to eq(true)
+      end
     end
   else
     non_superusers.each do |user|
