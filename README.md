@@ -88,6 +88,26 @@ The JSON results output file can be loaded into **[heimdall-lite](https://heimda
 
 The JSON InSpec results file may also be loaded into a **[full heimdall server](https://github.com/mitre/heimdall)**, allowing for additional functionality such as to store and compare multiple profile runs.
 
+## Notes
+
+Once the InSpec has finished running clean up any test users, roles, and databases that were created during the validation process.
+
+To automatically clean up these artifacts, run the file located [here](https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline-hardening/blob/main/spec/scripts/cleanup_manual.sh).
+
+This script will remove all the databases, users, and roles that were generated during testing.
+
+- **Databases**:
+  - `products`
+
+- **Users**:
+  - `test.myTester`
+  - `products.myRoleTestUser`
+
+- **Roles**:
+  - `products.myTestRole`
+
+For a complete list of potential users and roles created, look at the [`inspec.yml`](https://github.com/mitre/mongodb-enterprise-advanced-4-stig-baseline/blob/main/inspec.yml).
+
 ## Authors
 
 - Sean Chacon Cai - [seanlongcc](https://github.com/seanlongcc)
