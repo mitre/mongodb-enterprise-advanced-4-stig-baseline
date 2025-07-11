@@ -42,6 +42,7 @@ inputs:
   - name: mongo_dba
     description: "The mongo DBA user to access the test database"
     type: string
+    value: "root"
     required: true
     sensitive: true
 
@@ -50,6 +51,7 @@ inputs:
   - name: mongo_dba_password
     description: "The password for the mongo DBA user"
     type: string
+    value: "root"
     required: true
     sensitive: true
   
@@ -58,6 +60,7 @@ inputs:
   - name: mongo_host
     description: "The hostname or IP address used to connect to the database"
     type: string
+    value: "localhost"
     required: true
     sensitive: true
 
@@ -65,7 +68,8 @@ inputs:
   # SV-252165, SV-252167, SV-252168, SV-252169, SV-252174, SV-252175, SV-252176, SV-252182
   - name: mongo_port
     description: "The port used to connect to the database"
-    type: numeric
+    type: string
+    value: "27017"
     required: true
     sensitive: true
 
@@ -73,6 +77,7 @@ inputs:
   - name: mongo_auth_source
     description: "The database used to authorize users"
     type: string
+    value: "admin"
     required: true
     sensitive: true
 
@@ -90,6 +95,7 @@ inputs:
   - name: ca_file
     description: "The path to the CA file"
     type: string
+    value: "/etc/ssl/CA_bundle.pem"
     required: true
     sensitive: true
 
@@ -99,6 +105,7 @@ inputs:
   - name: certificate_key_file
     description: "The path to the certificate key file"
     type: string
+    value: "/etc/ssl/mongodb.pem"
     required: true
     sensitive: true
 
@@ -108,6 +115,7 @@ inputs:
     type: array
     value:
       - "admin.root"
+      - "test.myTester"
     required: true
     sensitive: true
 
@@ -202,7 +210,7 @@ inputs:
   - name: mongo_version
     description: "The edition of MongoDB in use"
     type: string
-    value: "7.0.12"
+    value: "8.0.9"
     required: true
 
   # SV-252182
